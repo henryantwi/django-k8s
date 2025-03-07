@@ -12,17 +12,24 @@ services:
       - web/.env
     ports:
       - "8001:8020"
-    command: sh -c "chmod +x /app/migrate.sh && /app/migrate.sh && /app/entrypoint.sh"
+    volumes:
+      - ./web/.env:/app/.env
+    command: >
+      bash -c "chmod +x /app/migrate.sh && chmod +x /app/entrypoint.sh &&
+              until pg_isready -h postgres_db -p 5432; do
+                echo 'waiting for database...';
+                sleep 2;
+              done;
+              /app/migrate.sh && /app/entrypoint.sh"
 
   postgres_db:
     image: postgres
-    command: -p 5433
     env_file:
       - web/.env
     expose:
-      - "5433"
+      - 5432
     ports:
-      - "5433:5433"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
@@ -36,7 +43,6 @@ services:
     volumes:
       - redis_data:/data
     command: ["redis-server", "--appendonly", "yes", "--port", "6380"]
-
 
 volumes:
   postgres_data:
