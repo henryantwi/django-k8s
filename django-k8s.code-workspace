@@ -15,6 +15,6 @@
         },
         "terminal.integrated.env.linux": {
             "KUBECONFIG": "${workspaceFolder}/.kube/kubeconfig.yaml"
-        },
+        }
     }
 }
