@@ -8,7 +8,10 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 DEBUG = str(os.environ.get('DEBUG')) == "1"
 
-ALLOWED_HOSTS = ["138.68.189.14", "localhost", "127.0.0.1"]
+ENV_ALLOWED_HOST = os.environ.get("ENV_ALLOWED_HOST")
+if ENV_ALLOWED_HOST:
+    ALLOWED_HOSTS = [ENV_ALLOWED_HOST,]
+
 
 
 INSTALLED_APPS = [
