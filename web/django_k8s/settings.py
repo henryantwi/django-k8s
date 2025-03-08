@@ -8,7 +8,10 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 DEBUG = str(os.environ.get('DEBUG')) == "1"
 
-ALLOWED_HOSTS = ["138.68.189.14", "localhost", "127.0.0.1"]
+ENV_ALLOWED_HOST = os.environ.get("ENV_ALLOWED_HOST")
+if ENV_ALLOWED_HOST:
+    ALLOWED_HOSTS = [ENV_ALLOWED_HOST,]
+
 
 
 INSTALLED_APPS = [
@@ -74,6 +77,7 @@ DB_IS_AVAIL = all([
     DB_HOST,
     DB_PORT
 ])
+DB_IGNORE_SSL = os.environ.get("DB_IGNORE_SSL") == "true"
 
 if DB_IS_AVAIL:
     DATABASES = {
@@ -86,6 +90,9 @@ if DB_IS_AVAIL:
             "PORT": DB_PORT,
         }
     }
+    
+    if not DB_IGNORE_SSL:
+        DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
 
 
 # Password validation
